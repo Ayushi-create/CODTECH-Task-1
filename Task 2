@@ -1,0 +1,156 @@
+Predictive Modeling with Linear Regression
+# importing necessary libraries
+​
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.datasets import fetch_california_housing
+housing = fetch_california_housing()
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error, r2_score
+# load the fetch_california  housing dataset
+boston = fetch_california_housing
+df = pd.DataFrame(housing.data, columns=housing.feature_names)
+df['PRICE'] = housing.target
+# load the first few rows of the dataset
+df.head()
+MedInc	HouseAge	AveRooms	AveBedrms	Population	AveOccup	Latitude	Longitude	PRICE
+0	8.3252	41.0	6.984127	1.023810	322.0	2.555556	37.88	-122.23	4.526
+1	8.3014	21.0	6.238137	0.971880	2401.0	2.109842	37.86	-122.22	3.585
+2	7.2574	52.0	8.288136	1.073446	496.0	2.802260	37.85	-122.24	3.521
+3	5.6431	52.0	5.817352	1.073059	558.0	2.547945	37.85	-122.25	3.413
+4	3.8462	52.0	6.281853	1.081081	565.0	2.181467	37.85	-122.25	3.422
+# display the shape of the dataset
+df.shape
+(20640, 9)
+# display the data types of each column
+print("\nData types of each column:")
+print(df.dtypes)
+
+Data types of each column:
+MedInc        float64
+HouseAge      float64
+AveRooms      float64
+AveBedrms     float64
+Population    float64
+AveOccup      float64
+Latitude      float64
+Longitude     float64
+PRICE         float64
+dtype: object
+df.describe()
+MedInc	HouseAge	AveRooms	AveBedrms	Population	AveOccup	Latitude	Longitude	PRICE
+count	20640.000000	20640.000000	20640.000000	20640.000000	20640.000000	20640.000000	20640.000000	20640.000000	20640.000000
+mean	3.870671	28.639486	5.429000	1.096675	1425.476744	3.070655	35.631861	-119.569704	2.068558
+std	1.899822	12.585558	2.474173	0.473911	1132.462122	10.386050	2.135952	2.003532	1.153956
+min	0.499900	1.000000	0.846154	0.333333	3.000000	0.692308	32.540000	-124.350000	0.149990
+25%	2.563400	18.000000	4.440716	1.006079	787.000000	2.429741	33.930000	-121.800000	1.196000
+50%	3.534800	29.000000	5.229129	1.048780	1166.000000	2.818116	34.260000	-118.490000	1.797000
+75%	4.743250	37.000000	6.052381	1.099526	1725.000000	3.282261	37.710000	-118.010000	2.647250
+max	15.000100	52.000000	141.909091	34.066667	35682.000000	1243.333333	41.950000	-114.310000	5.000010
+# check the missing values
+print("\nMissing values in each column:")
+print(df.isnull().sum())
+
+Missing values in each column:
+MedInc        0
+HouseAge      0
+AveRooms      0
+AveBedrms     0
+Population    0
+AveOccup      0
+Latitude      0
+Longitude     0
+PRICE         0
+dtype: int64
+VISUALISATION OF DATA
+# visualize the distribution of the target variable (PRICE)
+​
+plt.figure(figsize=(8,6))
+sns.histplot(df['PRICE'],bins=30, kde=True)
+plt.title("Distribution of Housing Prices")
+plt.xlabel("Price (in$1000s)")
+plt.ylabel("Frequency")
+plt.show()
+
+# define the feature and target variable
+​
+​
+X = df ['AveBedrms'] # using the average number of rooms per dwelling as the feature
+y = df['PRICE']  # the target variable is the housing price
+​
+# split the data into training and testing sets
+X_train,X_test,y_train ,y_test= train_test_split(x, y, test_size=0.2, random_state=42)
+​
+print(f"Training set size: {x_train.shape[0]}")
+print(f"Testing set size: {x_test.shape[0]}")
+Training set size: 16512
+Testing set size: 4128
+# Check data shapes
+print(f"X_train shape: {X_train.shape}")
+print(f"y_train shape: {y_train.shape}")
+​
+# Initialize the model
+model = LinearRegression()
+​
+# Train the model on the training data
+model.fit(X_train, y_train)
+​
+# Print the model's coefficients
+print(f"Intercept: {model.intercept_}")
+print(f"Coefficient: {model.coef_[0]}")
+X_train shape: (5, 1)
+y_train shape: (5,)
+Intercept: 0.5999999999999996
+Coefficient: 0.8000000000000002
+# Import necessary libraries
+import numpy as np
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error, r2_score
+​
+​
+# Make predictions on the test set
+y_pred = model.predict(X_test)
+​
+# Calculate the mean squared error and R-squared value
+mse = mean_squared_error(y_test, y_pred)
+r2 = r2_score(y_test, y_pred)
+​
+print(f"Mean Squared Error: {mse}")
+print(f"R-Squared: {r2}")
+Mean Squared Error: 0.72
+R-Squared: 0.64
+# plot the regression line
+plt.figure(figsize=(8, 6))
+plt.scatter(X_train, y_train, color='blue', label='Training data')
+plt.scatter(X_test, y_test, color='purple', label='Test data')
+plt.plot(X_test, y_pred, color='red', linewidth=2, label='Regression line')
+plt.xlabel("Average number of rooms per dwelling (RM)")
+plt.ylabel("Price (in $1000s)")
+plt.title("Linear Regression: RM vs PRICE")
+plt.legend()
+plt.show()  
+
+# Create the plot for actual vs predicted values
+plt.figure(figsize=(8, 6))
+plt.scatter(y_test, y_pred, color='purple')
+​
+# Plotting the perfect prediction line (45-degree line)
+plt.plot([min(y_test), max(y_test)], [min(y_test), max(y_test)], color='red', linewidth=2)
+​
+# Set labels and title
+plt.xlabel("Actual Prices")
+plt.ylabel("Predicted Prices")
+plt.title("Actual vs Predicted Prices")
+​
+# Display the plot
+plt.show()
+
+Loading the dataset and libraries: We load fetch_california_housing dataset and necessary libraries for analysis, modeling, and visualization.
+Exploring the dataset: We explore the dataset's shape, data types, summary statistics, and check for missing values. We also visualize the distribution of the target variable (housing prices).
+Splitting the data: We define our feature (RM, the average number of rooms per dwelling) and target variable (PRICE, the housing price). We then split the data into training and testing sets.
+Training the model: We create and train a simple linear regression model using the training data. We also print the model's coefficients.
+Evaluating the model: We make predictions on the test set and evaluate the model's performance using mean squared error (MSE) and R-squared (R²) metrics.
+Visualizing the results: We visualize the regression line along with the training and test data. We also create a scatter plot to compare the actual vs. predicted values.¶
